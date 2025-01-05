@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+      "target": "ES6",
+      "module": "commonjs",
+      "baseUrl": "./src",  // Define a raiz do módulo como a pasta src
+      "paths": {
+        "@src/*": ["*"]  // Mapeia @src para a raiz da pasta src
+      },
+      "resolveJsonModule": true,                        /* Enable importing .json files. */
+      "outDir": "./dist",
+      "rootDir": "./src",
+      "strict": true,
+      "esModuleInterop": true
+    },
+    "include": ["src/**/*.ts"],
+    "exclude": ["node_modules"]
+  }
+  

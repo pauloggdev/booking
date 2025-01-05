@@ -1,0 +1,521 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Invoicing API",
+        "description": "Invoicing API",
+        "termsOfService": "http://localhost:4000/terms",
+        "contact": {
+            "email": "pauloggjoao@gmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:4000",
+            "description": "API - Desenvolvimento"
+        },
+        {
+            "url": "http://localhost:4000",
+            "description": "API - Produção"
+        }
+    ],
+    "paths": {
+        "/createcompany": {
+            "post": {
+                "summary": "create company",
+                "tags": [
+                    "createcompany"
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "default": "Teste Company"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "default": "john@example.com"
+                                    },
+                                    "nif": {
+                                        "type": "string",
+                                        "default": "1234567890"
+                                    },
+                                    "foneNumber": {
+                                        "type": "string",
+                                        "default": "9999999999"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "default": "Rua Teste, 123"
+                                    },
+                                    "regime": {
+                                        "type": "string",
+                                        "default": "GERAL"
+                                    },
+                                    "balance": {
+                                        "type": "number",
+                                        "default": 0
+                                    },
+                                    "logo": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "nif",
+                                    "foneNumber",
+                                    "address",
+                                    "regime",
+                                    "balance",
+                                    "logo"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        },
+                                        "userName": {
+                                            "type": "string"
+                                        },
+                                        "userEmail": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "successResponse": {
+                                        "value": {
+                                            "token": "eyJhbGciOiJIUzI1NiIs",
+                                            "userName": "Teste Company",
+                                            "userEmail": "john@example.com"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/company/{uuid}": {
+            "get": {
+                "summary": "Retrieve company details",
+                "tags": [
+                    "company"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true,
+                        "description": "Unique identifier of the company",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Company details retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string",
+                                            "format": "uuid"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "nif": {
+                                            "type": "string"
+                                        },
+                                        "foneNumber": {
+                                            "type": "string"
+                                        },
+                                        "address": {
+                                            "type": "string"
+                                        },
+                                        "regime": {
+                                            "type": "string"
+                                        },
+                                        "balance": {
+                                            "type": "number"
+                                        },
+                                        "logoUrl": {
+                                            "type": "string",
+                                            "format": "url"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "successResponse": {
+                                        "value": {
+                                            "id": "550e8400-e29b-41d4-a716-446655440000",
+                                            "name": "Teste Company",
+                                            "email": "company@example.com",
+                                            "nif": "1234567890",
+                                            "foneNumber": "9999999999",
+                                            "address": "Rua Teste, 123",
+                                            "regime": "GERAL",
+                                            "balance": 1000.5,
+                                            "logoUrl": "http://localhost:4000/uploads/logo.png"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Company not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "errorResponse": {
+                                        "value": {
+                                            "message": "Company not found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "summary": "login user",
+                "tags": [
+                    "login"
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "default": "john@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "default": "123"
+                                    }
+                                },
+                                "required": [
+                                    "email",
+                                    "password"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "successResponse": {
+                                        "value": {
+                                            "message": "login!"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/createcustomer": {
+            "post": {
+                "summary": "create customer",
+                "tags": [
+                    "customer"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "default": "Customer 0001"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "default": "customer@example.com"
+                                    },
+                                    "nif": {
+                                        "type": "string",
+                                        "default": "12345678901"
+                                    },
+                                    "foneNumber": {
+                                        "type": "string",
+                                        "default": "9999999999"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "default": "Rua Teste, 123"
+                                    },
+                                    "logo": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "nif",
+                                    "foneNumber",
+                                    "address",
+                                    "logo"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "customerId": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "successResponse": {
+                                        "value": {
+                                            "customerId": "fea3b607-b4cb-459a-a071-d7e234e58d10",
+                                            "name": "Customer 0001"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "unauthorizedResponse": {
+                                        "value": {
+                                            "message": "Invalid or missing token"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/updatecustomer/{uuid}": {
+            "put": {
+                "summary": "Update customer details",
+                "tags": [
+                    "customer"
+                ],
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true,
+                        "description": "Unique identifier of the customer",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Customer details to update",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "default": "Updated Customer"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "default": "updated@example.com"
+                                    },
+                                    "nif": {
+                                        "type": "string",
+                                        "default": "9876543210"
+                                    },
+                                    "foneNumber": {
+                                        "type": "string",
+                                        "default": "9998887777"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "default": "Updated Street, 456"
+                                    },
+                                    "logo": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "required": [
+                                    "name",
+                                    "email"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Customer updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "successResponse": {
+                                        "value": {
+                                            "message": "Customer updated successfully"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "errorResponse": {
+                                        "value": {
+                                            "message": "Invalid input data"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Customer not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "errorResponse": {
+                                        "value": {
+                                            "message": "Customer not found"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    }
+}
